@@ -1,5 +1,7 @@
 #include "main.h"
 
+
+
 /**
  * _strlen- returns the length of a string
  * @s: string to check lenght of
@@ -18,6 +20,29 @@ while (*s != '\0')
 	}
 
 return (l);
+}
+
+/**
+ * _strncmp- compare two strings up to n
+ * @s1: first string
+ * @s2: second string
+ * @n: location to compare to
+ *
+ * Return: 0 if equal, >0 if first non matching
+ * character is greater (in ascii), <0 if less
+*/
+int _strncmp(char *s1, char *s2, int n)
+{
+	int i, s1len, s2len;
+
+	for (i = 0; i < n; i++)
+		{
+		if (*(s1 + i) != *(s2 + i))
+			{
+			return (*(s1 + i) - *(s2 + i));
+			}
+		}
+	return (0);
 }
 
 /**

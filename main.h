@@ -13,7 +13,8 @@
 
 int _strlen(char *s);
 char *_strdup(char *str);
+int _strncmp(char *s1, char *s2, int n);
 void parse_line(char *line);
 void exec_prog(char **path);
-
+char *get_path(char *env[]);
 #endif
