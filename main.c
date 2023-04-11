@@ -1,7 +1,5 @@
 #include "main.h"
 
-char **env_args;
-
 /**
  * exec_prog- execute given program
  * @path: path given to program
@@ -13,8 +11,6 @@ void exec_prog(char **path)
 	int status;
 	pid_t child_pid;
 
-	printf("%s\n", getenv("PATH"));
-
 	child_pid = fork();
 	if (child_pid == -1)
 	{
@@ -23,7 +19,7 @@ void exec_prog(char **path)
 	}
 	if (child_pid == 0) /* if child PID is 0 you are the child process*/
 	{
-		if (execve((const char *)path[0], path, env_args) == -1)
+		if (execve((const char *)path[0], path, NULL) == -1)
 		{
 			perror("Execve error");
 			exit(EXIT_FAILURE);
@@ -86,6 +82,7 @@ void parse_line(char *line)
 
 }
 
+
 /**
  * main- determine if terminal is a tty or not, gets PATH
  * and pass args to parse_line
@@ -99,11 +96,9 @@ int main(int argc, char *argv[], char *envp[])
 	int tty; /* 1 if tty 0 if not*/
 	size_t len = 0;
 
-	env_args = envp;
-
 	if (argc > 1) /* if there are arguments*/
 	{
-		line = strdup(argv[1]);
+		line = _strdup(argv[1]);
 	}
 
 	if (isatty(STDIN_FILENO))

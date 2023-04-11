@@ -11,10 +11,9 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
-extern char **env_args;
-
+int _strlen(char *s);
+char *_strdup(char *str);
 void parse_line(char *line);
 void exec_prog(char **path);
-
 
 #endif
