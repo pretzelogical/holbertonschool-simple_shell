@@ -1,6 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
-#define BUFFER_SIZE 32
+#define BUFFER_SIZE 128
 #define ARG_LIMIT 2
 
 #include <stdio.h>

@@ -1,5 +1,5 @@
 #include "main.h"
-
+#define PATH_LIMIT 24
 /**
  * get_path- extracts the PATH string from env
  * @env: environment strings
@@ -14,7 +14,7 @@ char *get_path(char *env[])
 	{
 		if (_strncmp(env[i], "PATH=", 5) == 0)
 		{
-			return(env[i]);
+			return(env[i] + 5);
 		}
 	}
 	return (NULL);
@@ -27,4 +27,9 @@ char *get_path(char *env[])
  *
  * Return: pointer to tokenised string array
 */
-// char *parse_path(char *path)
+char *parse_path(char *path)
+{
+	char *out[];
+
+
+}
