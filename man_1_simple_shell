@@ -34,4 +34,4 @@ Exits the shell
 env
 print the current environment of the shell
 .SH AUTHORS
-Wyatt Morris, Fox.
+Wyatt Morris, Fox Galileo.

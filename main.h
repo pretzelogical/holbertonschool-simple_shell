@@ -17,4 +17,7 @@ int _strncmp(char *s1, char *s2, int n);
 void parse_line(char *line);
 void exec_prog(char **path);
 char *get_path(char *env[]);
+char **parse_path(char *path);
+void free_parsed_path(char **parsed_path);
+char *search_path(char **parsed_path, char *command);
 #endif

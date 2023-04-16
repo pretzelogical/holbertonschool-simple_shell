@@ -1,4 +1,5 @@
 #include "../main.h"
+#define PATH_LIMIT 24
 
 /**
  * test_env- tests functions in the env part of the program
@@ -9,9 +10,22 @@
 void test_env(char **env)
 {
 	char *getted;
+	char **parsed;
+	int i;
 
 	getted = get_path(env);
 	printf("getpath(env) = %s\n", getted);
+	parsed = parse_path(getted);
+
+	for (i = 0; i < PATH_LIMIT; i++)
+	{
+		if (parsed[i] != NULL)
+			printf("parsed[%i] = %s\n", i, parsed[i]);
+		else
+			break;
+	}
+
+	free_parsed_path(parsed);
 }
 
 /**

@@ -1,5 +1,5 @@
 % hsh(1) Version 0.x | Holberton Simple Shell
-% Wyatt Morris, Fox
+% Wyatt Morris, Fox Galileo
 % April 2023
 
 # NAME

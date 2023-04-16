@@ -51,7 +51,7 @@ void parse_line(char *line)
 	path = malloc(sizeof(char *) * ARG_LIMIT);
 	if (!path)
 	{
-		fprintf(stderr, "FATAL: MALLOC FAILURE\n");
+		perror("FATAL: MALLOC FAILURE\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -60,7 +60,7 @@ void parse_line(char *line)
 		path[i] = malloc(sizeof(char) * BUFFER_SIZE);
 		if (path[i] == NULL)
 		{
-			fprintf(stderr, "FATAL: MALLOC FAILURE\n");
+			perror("FATAL: MALLOC FAILURE\n");
 			exit(EXIT_FAILURE);
 		}
 	}
