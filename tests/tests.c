@@ -1,5 +1,6 @@
 #include "../main.h"
-#define PATH_LIMIT 24
+
+void test_search(char **parsed_path);
 
 /**
  * test_env- tests functions in the env part of the program
@@ -25,6 +26,8 @@ void test_env(char **env)
 			break;
 	}
 
+	test_search(parsed);
+
 	free_parsed_path(parsed);
 }
 
@@ -35,14 +38,37 @@ void test_env(char **env)
 */
 void test_str()
 {
+	char dest[20] = "BRUH";
+	char src[4] = "JOE";
 	int out;
 	out = _strncmp("BRUH", "BRUH", 4);
 	printf("_strcmp(BRUH, BRUH, 4) = %i\n", out);
-	out = _strncmp("BRUHFAM", "BRUHJOE", 4);
-	printf("_strcmp(BRUHFAM, BRUHJOE, 4) = %i\n", out);
-	out = _strncmp("BRUHFAM", "BRUHJOE", 5);
-	printf("_strcmp(BRUHFAM, BRUHJOE, 5) = %i\n", out);
+	out = _strncmp("BRUHJON", "BRUHJOE", 4);
+	printf("_strcmp(BRUHJON, BRUHJOE, 4) = %i\n", out);
+	out = _strncmp("BRUHJON", "BRUHJOE", 5);
+	printf("_strcmp(BRUHJON, BRUHJOE, 5) = %i\n", out);
+
+	_strcat(dest, src);
+	printf("dest = %s\n", dest);
 }
+
+/**
+ * tests_search- tests functions concerning search
+ * @parsed_path: parsed path
+ * Return: void return
+*/
+void test_search(char **parsed_path)
+{
+	char *path = strdup("usr/bin");
+	char *command = strdup("/cat");
+	int out;
+	
+	out = exec_search(path, command);
+	// printf("exec_search(path, command) = %i\n", out);
+
+	// printf("search_path(parsed_path, command) = %s\n", search_path(parsed_path, command));
+}
+
 /**
  * main- runs the tests
  * @argc: argument count

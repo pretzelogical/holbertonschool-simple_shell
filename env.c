@@ -1,5 +1,5 @@
 #include "main.h"
-#define PATH_LIMIT 24
+
 /**
  * get_path- extracts the PATH string from env
  * @env: environment strings
@@ -38,13 +38,13 @@ char **parse_path(char *path)
 	out = malloc(PATH_LIMIT * sizeof(char *));
 	if (out == NULL)
 	{
-		perror("FATAL: MALLOC FAILURE\n");
+		perror("FATAL: MALLOC FAILURE");
 		exit(EXIT_FAILURE);
 	}
 	out[0] = _strdup(strtok(pathtmp, ":"));
 	if (out[0] == NULL)
 	{
-		perror("FATAL: MALLOC FAILURE\n");
+		perror("FATAL: MALLOC FAILURE");
 		exit(EXIT_FAILURE);
 	}
 	for (i = 1; i < PATH_LIMIT && out[i - 1] != NULL; i++)
@@ -57,7 +57,7 @@ char **parse_path(char *path)
 		*/
 		if (out[i - 1] == NULL)
 		{
-			perror("FATAL: MALLOC FAILURE\n");
+			perror("FATAL: MALLOC FAILURE");
 			exit(EXIT_FAILURE);
 		}
 	}

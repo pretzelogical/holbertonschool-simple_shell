@@ -58,11 +58,37 @@ char *_strdup(char *str)
 
 	if (str == NULL)
 		return (NULL);
-	l = _strlen(str) + 1;
-	out = malloc(l  *sizeof(char));
+	l = _strlen(str);
+	out = malloc(l * sizeof(char));
 	if (out == NULL)
 		return (NULL);
 	for (i = 0; i < l; i++)
 		out[i] = str[i];
 	return (out);
+}
+
+/**
+ * _strcat- concatenates two strings
+ * @dest: string to append to
+ * @src: string to append
+ *
+ * Return: Always return a pointer to the resulting
+ * string dest
+*/
+char *_strcat(char *dest, char *src)
+{
+	int i, srclen, destlen;
+
+	srclen = _strlen(src);
+	destlen = _strlen(dest);
+	i = destlen;
+	/* starts at nullbyte of dest*/
+	while (i <= destlen + srclen)
+		{
+		*(dest + i) = *(src + (i - destlen));
+		i++;
+		}
+	*(dest + i) = '\0';
+
+	return (dest);
 }

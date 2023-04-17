@@ -2,6 +2,7 @@
 #define MAIN_H
 #define BUFFER_SIZE 128
 #define ARG_LIMIT 2
+#define PATH_LIMIT 24
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,10 +15,12 @@
 int _strlen(char *s);
 char *_strdup(char *str);
 int _strncmp(char *s1, char *s2, int n);
+char *_strcat(char *dest, char *src);
 void parse_line(char *line);
 void exec_prog(char **path);
 char *get_path(char *env[]);
 char **parse_path(char *path);
 void free_parsed_path(char **parsed_path);
-char *search_path(char **parsed_path, char *command);
+char *search_path(char **parsed_path, char *exec);
+int exec_search(char *path, char *exec);
 #endif
