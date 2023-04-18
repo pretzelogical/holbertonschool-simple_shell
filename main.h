@@ -33,4 +33,5 @@ int exec_search(char *path, char *exec);
 char *exec_add_dir(char *exec);
 int check_builtins(char **args, char *envp[]);
 void env_bi(char **env);
+int check_tty(const int stream);
 #endif

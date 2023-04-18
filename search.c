@@ -31,7 +31,7 @@ char *exec_add_dir(char *exec)
 {
 	char *out;
 
-	if (exec[0] != '/')
+	if (exec[0] != '/' || exec[0] != '.')
 	{
 		out = str_concat("/", exec);
 		return (out);

@@ -159,20 +159,18 @@ int main(int argc, char *argv[], char *envp[])
 		line = _strdup(argv[1]);
 	}
 
-	if (isatty(STDIN_FILENO))
-		tty = 1;
-	else
-		tty = 0;
-
+	tty = check_tty(STDIN_FILENO);
 	if (tty == 1)
 		_puts(prompt);
 	while (getline(&line, &len, stdin) != -1)
 	{
 		if (line[0] == '\n' || line[0] == '\0' || line[0] == ' ')
 		{
-			_puts("Error: No command\n");
 			if (tty == 1)
+			{
 				_puts(prompt);
+				_puts("Error: No command\n");
+			}
 			continue;
 		}
 		envcp = strp_array_dup(envp);
