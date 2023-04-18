@@ -3,13 +3,15 @@
 /**
  * exec_prog- execute given program
  * @path: path given to program
+ * @envp: environment variables to use
  *
  * Return: void return
 */
-void exec_prog(char **path)
+void exec_prog(char *path, char *envp[])
 {
 	int status;
 	pid_t child_pid;
+	char *args[] = {"-l", NULL};
 
 	child_pid = fork();
 	if (child_pid == -1)
@@ -19,7 +21,7 @@ void exec_prog(char **path)
 	}
 	if (child_pid == 0) /* if child PID is 0 you are the child process*/
 	{
-		if (execve((const char *)path[0], path, NULL) == -1)
+		if (execve(path, args, envp) == -1)
 		{
 			perror("Execve error");
 			exit(EXIT_FAILURE);
@@ -41,45 +43,30 @@ void exec_prog(char **path)
  *
  * Return: Void return
 */
-void parse_line(char *line)
+void parse_line(char *line, char *envp[])
 {
-	char **path;
+	char *path;
 	char *command;
-	int i;
 
-
-	path = malloc(sizeof(char *) * ARG_LIMIT);
-	if (!path)
-	{
-		perror("FATAL: MALLOC FAILURE");
-		exit(EXIT_FAILURE);
-	}
-
-	for (i = 0; i < ARG_LIMIT; i++)
-	{
-		path[i] = malloc(sizeof(char) * BUFFER_SIZE);
-		if (path[i] == NULL)
-		{
-			perror("FATAL: MALLOC FAILURE");
-			exit(EXIT_FAILURE);
-		}
-	}
 	command = strtok(line, " \n\t\r");
 	if (!command)
 	{
 		printf("Error: No command\n");
 		return;
 	}
-	path[0] = strdup(command);
-	path[1] = NULL;
 
-	exec_prog(path);
+	path = search_path(command, envp);
 
-	for (i = 0; i < ARG_LIMIT; i++)
-		free(path[i]);
+	printf("path: %s\n", path);
+	printf("command: %s\n", command);
 
+	if (!path)
+	{
+		_puts("Error: Command not found\n");
+		return;
+	}
+	exec_prog(path, envp);
 	free(path);
-
 }
 
 
@@ -92,9 +79,10 @@ void parse_line(char *line)
 int main(int argc, char *argv[], char *envp[])
 {
 	char *line = NULL;
-	const char *prompt[] = {"$ ", "($) "};
+	char *prompt[] = {"$ ", "($) "};
 	int tty; /* 1 if tty 0 if not*/
 	size_t len = 0;
+	char **envcp;
 
 	if (argc > 1) /* if there are arguments*/
 	{
@@ -106,13 +94,15 @@ int main(int argc, char *argv[], char *envp[])
 	else
 		tty = 0;
 
-
 	printf("%s", prompt[tty]);
 	while (getline(&line, &len, stdin) != -1)
 	{
-		parse_line(line);
-		printf("%s", prompt[tty]);
+		envcp = strp_array_dup(envp);
+		parse_line(line, envp);
+		_puts(prompt[tty]);
+		strp_array_free(envcp);
 	}
 
+	free(line);
 	exit(EXIT_SUCCESS);
 }

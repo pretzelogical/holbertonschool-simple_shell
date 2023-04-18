@@ -1,21 +1,87 @@
 #include "main.h"
 
 /**
+ * get_path- extracts the PATH string from env
+ * @env: environment strings
+ *
+ * Return: pointer to path or NULL if not found
+*/
+char *get_path(char *envp[])
+{
+	int i;
+
+	for (i = 0; envp[i] != NULL; i++)
+	{
+		if (_strncmp(envp[i], "PATH=", 5) == 0)
+		{
+			return (envp[i]);
+		}
+	}
+	return (NULL);
+}
+
+/**
+ * exec_add_dir- formats the exec string so that it can be used to search
+ * for the executable
+ * @exec: the string to format
+ *
+ * Return: character pointer to string
+*/
+char *exec_add_dir(char *exec)
+{
+	char *out;
+	if (exec[0] != '/')
+	{
+		out = str_concat("/", exec);
+		return (out);
+	}
+	else
+	{
+		out = _strdup(exec);
+		return (out);
+	}
+}
+
+/**
  * search_path- takes a parsed path array and returns the first file
  * in the path that matches the executable.
  * @parsed_path: the parsed path to search
  *
  * Return: the full path of the file, if no file is found, return NULL.
 */
-char *search_path(char **parsed_path, char *exec)
+char *search_path(char *exec, char *envp[])
 {
 	int i;
+	char *execTmp;
+	char *pathTmpStart;
+	char *pathTmp;
+	char *parsed[PATH_LIMIT];
+	char *out;
 
-	for (i = 0; i < PATH_LIMIT && parsed_path[i] != NULL; i++)
+	execTmp = exec_add_dir(exec);
+	pathTmpStart = _strdup(get_path(envp));
+	pathTmp = pathTmpStart + 5;
+
+	parsed[0] = strtok(pathTmp, ":");
+	i = 1;
+	while ((parsed[i] = strtok(NULL, ":")) != NULL)
+		i++;
+	
+	for (i = 0; parsed[i + 1] != NULL; i++)
 	{
-		if (exec_search(parsed_path[i], exec) == 1)
-			return (parsed_path[i]);
+		if (exec_search(parsed[i], execTmp) == 1)
+		{
+			printf("pathTmpStart: %s\n", pathTmpStart);
+			out = str_concat(parsed[i], execTmp);
+			free(execTmp);
+			free(pathTmpStart);
+			return (out);
+		}
 	}
+	free(execTmp);
+	printf("%s\n", pathTmpStart);
+	free(pathTmpStart);
+
 	return (NULL);
 }
 
@@ -28,27 +94,24 @@ char *search_path(char **parsed_path, char *exec)
 */
 int exec_search(char *path, char *exec)
 {
-	char *tmp;
+	char *fullPath;
 
-	tmp = _strdup(_strcat(path, exec));
+	fullPath = str_concat(path, exec);
 
-	if (access(tmp, F_OK) == 0)
+	if (access(fullPath, F_OK) != 0)
 	{
-		printf("File %s exists\n", path);
-	}
-	else
-	{
-		free(tmp);
+		free(fullPath);
 		return (0);
 	}
 
-	if (access(tmp, X_OK) == 0)
+	if (access(fullPath, X_OK) == 0)
 	{
-		free(tmp);
-		printf("File %s executable\n", path);
+		free(fullPath);
 		return (1);
 	}
 
-	free(tmp);
+	free(fullPath);
 	return (0);
 }
+
+
