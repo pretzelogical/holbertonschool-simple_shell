@@ -79,8 +79,13 @@ char *search_path(char *exec, char *envp[])
 			return (out);
 		}
 	}
-	free(execTmp);
-	free(pathTmpStart);
+	if (exec_search(NULL, execTmp) == 1)
+	{
+		out = str_concat(NULL, execTmp);
+		free(execTmp);
+		free(pathTmpStart);
+		return (out);
+	}
 
 	return (NULL);
 }
@@ -96,7 +101,11 @@ int exec_search(char *path, char *exec)
 {
 	char *fullPath;
 
-	fullPath = str_concat(path, exec);
+	if (path == NULL)
+		fullPath = _strdup(exec);
+	else
+		fullPath = str_concat(path, exec);
+
 
 	if (access(fullPath, F_OK) != 0)
 	{
