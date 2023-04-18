@@ -20,7 +20,7 @@ char *_strdup(const char *str)
 	if (strcopy == NULL)
 	{
 		perror("FATAL: MALLOC FAILED");
-		exit (EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	for (i = 0; i < n; i++)
 	{
@@ -45,14 +45,6 @@ char **strp_array_dup(char **strarr)
 	for (i = 0; i < ENV_CP_LIMIT; i++)
 	{
 		dup[i] = _strdup(strarr[i]);
-		if (dup[i] != NULL)
-			printf("%s\n", dup[i]);
-
-		/*if (dup[i - 1] == NULL)
-		{
-			perror("FATAL: MALLOC FAILED");
-			exit(EXIT_FAILURE);
-		}*/
 		if (dup[i] == NULL)
 			return (dup);
 	}

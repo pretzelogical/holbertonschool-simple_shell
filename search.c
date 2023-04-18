@@ -2,7 +2,7 @@
 
 /**
  * get_path- extracts the PATH string from env
- * @env: environment strings
+ * @envp: environment strings
  *
  * Return: pointer to path or NULL if not found
 */
@@ -30,6 +30,7 @@ char *get_path(char *envp[])
 char *exec_add_dir(char *exec)
 {
 	char *out;
+
 	if (exec[0] != '/')
 	{
 		out = str_concat("/", exec);
@@ -45,7 +46,8 @@ char *exec_add_dir(char *exec)
 /**
  * search_path- takes a parsed path array and returns the first file
  * in the path that matches the executable.
- * @parsed_path: the parsed path to search
+ * @exec: the executable to search for
+ * @envp: environment strings
  *
  * Return: the full path of the file, if no file is found, return NULL.
 */
@@ -66,12 +68,11 @@ char *search_path(char *exec, char *envp[])
 	i = 1;
 	while ((parsed[i] = strtok(NULL, ":")) != NULL)
 		i++;
-	
+
 	for (i = 0; parsed[i + 1] != NULL; i++)
 	{
 		if (exec_search(parsed[i], execTmp) == 1)
 		{
-			printf("pathTmpStart: %s\n", pathTmpStart);
 			out = str_concat(parsed[i], execTmp);
 			free(execTmp);
 			free(pathTmpStart);
@@ -79,7 +80,6 @@ char *search_path(char *exec, char *envp[])
 		}
 	}
 	free(execTmp);
-	printf("%s\n", pathTmpStart);
 	free(pathTmpStart);
 
 	return (NULL);

@@ -8,16 +8,16 @@
  */
 int _strlen(char *s)
 {
-int l;
+	int l;
 
-l = 0;
-while (*s != '\0')
+	l = 0;
+	while (*s != '\0')
 	{
 		s++;
 		l++;
 	}
 
-return (l);
+	return (l);
 }
 
 /**

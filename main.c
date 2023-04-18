@@ -3,20 +3,20 @@
 /**
  * exec_prog- execute given program
  * @path: path given to program
+ * @args: arguments to pass to program
  * @envp: environment variables to use
  *
  * Return: void return
 */
-void exec_prog(char *path, char *envp[])
+void exec_prog(char *path, char **args, char *envp[])
 {
 	int status;
 	pid_t child_pid;
-	char *args[] = {"-l", NULL};
 
 	child_pid = fork();
 	if (child_pid == -1)
 	{
-		fprintf(stderr, "FATAL: FORK ERROR\n");
+		perror("FATAL: FORK ERROR");
 		exit(EXIT_FAILURE);
 	}
 	if (child_pid == 0) /* if child PID is 0 you are the child process*/
@@ -34,45 +34,115 @@ void exec_prog(char *path, char *envp[])
 }
 
 /**
+ * check_builtins- check if command is a built in and if so run it
+ * @args: arguments to check
+ * @envp: environment variables to use
+ *
+ * Return: 2 if need to exit, 1 if builtin was run, 0 otherwise
+*/
+int check_builtins(char **args, char *envp[])
+{
+	if (_strncmp(args[0], "exit", 4) == 0)
+	{
+		return (2);
+	}
+	if (_strncmp(args[0], "env", 3) == 0)
+	{
+		env_bi(envp);
+		return (1);
+	}
+	return (0);
+}
+
+/**
+ * get_args- get arguments from line
+ * @line: line read in from user
+ *
+ * Return: array of arguments
+*/
+char **get_args(char *line)
+{
+	char **args;
+	int i;
+
+	args = malloc(sizeof(char *) * ARG_LIMIT);
+	if (!args)
+	{
+		perror("FATAL: MALLOC ERROR");
+		exit(EXIT_FAILURE);
+	}
+	for (i = 0; i < ARG_LIMIT; i++)
+	{
+		if (i == 0)
+			args[i] = strtok(line, " \n\t\r");
+		else
+			args[i] = strtok(NULL, " \n\t\r");
+	}
+	if (!args)
+	{
+		_puts("Error: No command\n");
+		return (NULL);
+	}
+	return (args);
+}
+
+/**
  * parse_line- (Currently) takes the first argument as a path to an
  * executable forks itself and runs that executable in the child process
  * and returns
  * (Later) will be able to take multiple arguments and pass them to the
  * program
  * @line: line read in from user
+ * @envp: environment variables to use
  *
- * Return: Void return
+ * Return: 1 if program is to exit, 0 otherwise
 */
-void parse_line(char *line, char *envp[])
+int parse_line(char *line, char *envp[])
 {
 	char *path;
-	char *command;
+	char *linetmp;
+	char **args;
 
-	command = strtok(line, " \n\t\r");
-	if (!command)
+	linetmp = _strdup(line);
+	args = get_args(linetmp);
+	if (!args)
 	{
-		printf("Error: No command\n");
-		return;
+		free(linetmp);
+		return (0);
 	}
-
-	path = search_path(command, envp);
-
-	printf("path: %s\n", path);
-	printf("command: %s\n", command);
-
+	if (check_builtins(args, envp) == 2)
+	{
+		free(args);
+		free(linetmp);
+		return (1);
+	}
+	else if (check_builtins(args, envp) == 1)
+	{
+		free(args);
+		free(linetmp);
+		return (0);
+	}
+	path = search_path(args[0], envp);
 	if (!path)
 	{
 		_puts("Error: Command not found\n");
-		return;
+		return (0);
 	}
-	exec_prog(path, envp);
+	exec_prog(path, args, envp);
+
+	free(args);
+	free(linetmp);
 	free(path);
+	return (0);
 }
 
 
 /**
  * main- determine if terminal is a tty or not, gets PATH
  * and pass args to parse_line
+ * @argc: number of arguments
+ * @argv: arguments
+ * @envp: environment variables
  *
  * Return: Exit in place of return
 */
@@ -94,11 +164,21 @@ int main(int argc, char *argv[], char *envp[])
 	else
 		tty = 0;
 
-	printf("%s", prompt[tty]);
+	_puts(prompt[tty]);
 	while (getline(&line, &len, stdin) != -1)
 	{
+		if (line[0] == '\n' || line[0] == '\0' || line[0] == ' ')
+		{
+			_puts("Error: No command\n");
+			_puts(prompt[tty]);
+			continue;
+		}
 		envcp = strp_array_dup(envp);
-		parse_line(line, envp);
+		if (parse_line(line, envcp) == 1)
+		{
+			strp_array_free(envcp);
+			break;
+		}
 		_puts(prompt[tty]);
 		strp_array_free(envcp);
 	}
