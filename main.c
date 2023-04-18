@@ -149,7 +149,7 @@ int parse_line(char *line, char *envp[])
 int main(int argc, char *argv[], char *envp[])
 {
 	char *line = NULL;
-	char *prompt[] = {"$ ", "($) "};
+	char *prompt = "($) ";
 	int tty; /* 1 if tty 0 if not*/
 	size_t len = 0;
 	char **envcp;
@@ -164,13 +164,15 @@ int main(int argc, char *argv[], char *envp[])
 	else
 		tty = 0;
 
-	_puts(prompt[tty]);
+	if (tty == 1)
+		_puts(prompt);
 	while (getline(&line, &len, stdin) != -1)
 	{
 		if (line[0] == '\n' || line[0] == '\0' || line[0] == ' ')
 		{
 			_puts("Error: No command\n");
-			_puts(prompt[tty]);
+			if (tty == 1)
+				_puts(prompt);
 			continue;
 		}
 		envcp = strp_array_dup(envp);
@@ -179,7 +181,8 @@ int main(int argc, char *argv[], char *envp[])
 			strp_array_free(envcp);
 			break;
 		}
-		_puts(prompt[tty]);
+		if (tty == 1)
+			_puts(prompt);
 		strp_array_free(envcp);
 	}
 
